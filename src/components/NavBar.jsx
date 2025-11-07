@@ -14,7 +14,7 @@ export default function NavBar() {
   return (
     <div className="w-full sticky top-0 z-50 bg-white border-b">
       <div className="max-w-5xl mx-auto p-4">
-        <NavigationMenu viewport={false} disableHoverTrigger>
+        <NavigationMenu viewport={false}>
           <NavigationMenuList className="flex gap-6">
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
