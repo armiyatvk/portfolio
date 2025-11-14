@@ -70,7 +70,7 @@ import ProjectPreview from "@/components/ProjectPreview";
 export default function HomePage() {
   return (
     <main className="flex flex-col">
-      <NavBar />
+      {/* <NavBar /> */}
       <Hero />
       <ProjectPreview count={3} />
     </main>
