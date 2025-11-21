@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 const schema = z.object({
   title: z.string().min(2),
@@ -42,21 +43,37 @@ export default function NewPage() {
   });
 
   async function onSubmit(values) {
-    const fd = new FormData();
-    fd.append("title", values.title);
-    fd.append("description", values.description);
-    fd.append("img", values.img);
-    fd.append("link", values.link);
-    fd.append("keywords", JSON.stringify(values.keywords));
+    const formData = new FormData();
+    formData.append("title", values.title);
+    formData.append("description", values.description);
+    formData.append("img", values.img);
+    formData.append("link", values.link);
+    formData.append("keywords", JSON.stringify(values.keywords));
 
-    const res = await fetch("/api/projects/new", {
-      method: "POST",
-      body: fd,
-    });
+    // show loading toast
+    toast.loading("Submitting...");
 
-    if (res.ok) alert("Project submitted! Check server logs.");
-    else alert("Error submitting project");
+    try {
+      const res = await fetch("/api/projects/new", {
+        method: "POST",
+        body: formData,
+      });
+
+      const body = await res.json();
+      toast.dismiss();
+
+      if (body.ok) {
+        toast.success("Project received successfully!");
+        form.reset();
+      } else {
+        toast.error("Failed to submit.");
+      }
+    } catch (err) {
+      toast.dismiss();
+      toast.error("An error occurred.");
+    }
   }
+
 
   return (
     <div className="max-w-xl mt-6">

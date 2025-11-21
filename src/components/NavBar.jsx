@@ -23,13 +23,12 @@ export default function NavBar() {
           Armiya.dev
         </Link>
 
-        {/* Mobile Menu Button */}
+        {/* Hamburger (Mobile) */}
         <button
           className="md:hidden p-2 border rounded"
           onClick={() => setOpen(!open)}
-          aria-label="Toggle Menu"
         >
-          {open ? "✕" : "☰"}
+          ☰
         </button>
 
         {/* Desktop Navigation */}
@@ -49,9 +48,16 @@ export default function NavBar() {
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
+              {/* NEW Contact Button */}
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <Link href="/contact">Contact Me</Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+
               <NavigationMenuItem>
                 <NavigationMenuTrigger>Resume</NavigationMenuTrigger>
-                <NavigationMenuContent className="p-2 flex flex-col bg-white border rounded-md shadow">
+                <NavigationMenuContent className="p-2 flex flex-col gap-1 bg-white border rounded-md shadow">
                   <NavigationMenuLink asChild>
                     <Link href="/resume/pdf">PDF</Link>
                   </NavigationMenuLink>
@@ -74,31 +80,22 @@ export default function NavBar() {
 
       {/* MOBILE MENU */}
       {open && (
-        <nav className="md:hidden flex flex-col gap-4 p-4 bg-white border-t animate-fadeIn">
+        <nav className="md:hidden flex flex-col gap-3 p-4 bg-white border-t">
+          <Link href="/" onClick={() => setOpen(false)}>Home</Link>
+          <Link href="/projects" onClick={() => setOpen(false)}>Projects</Link>
           
-          <Link href="/" onClick={() => setOpen(false)}>
-            Home
-          </Link>
-
-          <Link href="/projects" onClick={() => setOpen(false)}>
-            Projects
-          </Link>
+          {/* NEW Contact Button */}
+          <Link href="/contact" onClick={() => setOpen(false)}>Contact</Link>
 
           <details className="cursor-pointer">
             <summary className="py-2">Resume</summary>
             <div className="pl-4 flex flex-col gap-2">
-              <Link href="/resume/pdf" onClick={() => setOpen(false)}>
-                PDF
-              </Link>
-              <Link href="/resume/latex" onClick={() => setOpen(false)}>
-                LaTeX
-              </Link>
+              <Link href="/resume/pdf" onClick={() => setOpen(false)}>PDF</Link>
+              <Link href="/resume/latex" onClick={() => setOpen(false)}>LaTeX</Link>
             </div>
           </details>
 
-          <Link href="/login" onClick={() => setOpen(false)}>
-            Login
-          </Link>
+          <Link href="/login" onClick={() => setOpen(false)}>Login</Link>
         </nav>
       )}
     </header>

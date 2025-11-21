@@ -66,6 +66,7 @@
 import NavBar from "@/components/NavBar";
 import Hero from "@/components/Hero";
 import ProjectPreview from "@/components/ProjectPreview";
+import GitHubCalendar from "@/components/github-calendar";
 
 export default function HomePage() {
   return (
@@ -73,6 +74,7 @@ export default function HomePage() {
       {/* <NavBar /> */}
       <Hero />
       <ProjectPreview count={3} />
+      <GitHubCalendar username="armiyatvk" />
     </main>
   );
 }
