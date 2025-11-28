@@ -1,20 +1,7 @@
-export async function GET() {
-  const projects = [
-    {
-      title: "Conway's Game of Life",
-      description: "A cellular automaton simulation.",
-      image: "/profile.jpg",
-      link: "https://example.com/game",
-      keywords: ["simulation", "automata"],
-    },
-    {
-      title: "Weather App",
-      description: "Simple weather dashboard.",
-      image: "/profile.jpg",
-      link: "https://example.com/weather",
-      keywords: ["api", "weather"],
-    },
-  ];
+import { NextResponse } from "next/server";
+import { fetchProjects } from "@/lib/db";
 
-  return Response.json({ projects });
+export async function GET() {
+  const projects = await fetchProjects();
+  return NextResponse.json(projects);
 }

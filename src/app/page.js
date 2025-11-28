@@ -1,81 +1,24 @@
-// import {
-//   NavigationMenu,
-//   NavigationMenuContent,
-//   NavigationMenuIndicator,
-//   NavigationMenuItem,
-//   NavigationMenuLink,
-//   NavigationMenuList,
-//   NavigationMenuTrigger,
-//   NavigationMenuViewport,
-// } from "@/components/ui/navigation-menu";
-// import Link from "next/link";
-
-// export default function Home() {
-//   return (
-//     <div className="min-h-screen bg-zinc-50 dark:bg-black font-sans">
-//       <nav className="w-full sticky top-0 bg-white border-b py-3 px-4">
-//         <NavigationMenu viewport={false}>
-//           <NavigationMenuList className="flex gap-4">
-
-//             {/* HOME */}
-//             <NavigationMenuItem>
-//               <NavigationMenuLink asChild>
-//                 <Link href="/">Home</Link>
-//               </NavigationMenuLink>
-//             </NavigationMenuItem>
-
-//             {/* PROJECTS */}
-//             <NavigationMenuItem>
-//               <NavigationMenuLink asChild>
-//                 <Link href="/projects">Projects</Link>
-//               </NavigationMenuLink>
-//             </NavigationMenuItem>
-
-//             {/* RESUME DROPDOWN */}
-//             <NavigationMenuItem>
-//               <NavigationMenuTrigger>Resume</NavigationMenuTrigger>
-//               <NavigationMenuContent className="p-2 flex flex-col gap-1 bg-white border rounded-md shadow">
-//                 <NavigationMenuLink asChild>
-//                   <a href="#">PDF</a>
-//                 </NavigationMenuLink>
-//                 <NavigationMenuLink asChild>
-//                   <a href="#">LaTeX</a>
-//                 </NavigationMenuLink>
-//               </NavigationMenuContent>
-//             </NavigationMenuItem>
-
-//             {/* LOGIN */}
-//             <NavigationMenuItem>
-//               <NavigationMenuLink asChild>
-//                 <Link href="/login">Login</Link>
-//               </NavigationMenuLink>
-//             </NavigationMenuItem>
-
-//           </NavigationMenuList>
-//         </NavigationMenu>
-//       </nav>
-
-//       {/* Page Content Here */}
-//       <div className="p-10 text-center text-xl text-gray-700">
-//         Your homepage content...
-//       </div>
-//     </div>
-//   );
-// }
-
-import NavBar from "@/components/NavBar";
 import Hero from "@/components/Hero";
 import ProjectPreview from "@/components/ProjectPreview";
 import GitHubCalendar from "@/components/github-calendar";
+import { fetchProjects } from "@/lib/db"; // 1. Import the DB helper
 
-export default function HomePage() {
+// 2. Add 'async' here so we can wait for the database
+export default async function HomePage() {
+  
+  // 3. Fetch the real data from your Neon database
+  // Default to empty array [] if something fails so the app doesn't crash
+  const projects = (await fetchProjects()) || [];
+
   return (
     <main className="flex flex-col">
-      {/* <NavBar /> */}
+      {/* NavBar is already in layout.js, so you don't need it here */}
       <Hero />
-      <ProjectPreview count={3} />
+      
+      {/* 4. Pass the fetched data to the component */}
+      <ProjectPreview projects={projects} count={3} />
+      
       <GitHubCalendar username="armiyatvk" />
     </main>
   );
 }
-

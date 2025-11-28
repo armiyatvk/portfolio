@@ -1,45 +1,45 @@
-import Image from "next/image";
 import Link from "next/link";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { createSlug } from "@/lib/utils";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import Image from "next/image";
 
-export default async function ProjectPreview({ count = 3 }) {
-  const base = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const res = await fetch(`${base}/api/projects`, { cache: "no-store" });
-  const { projects } = await res.json();
-
-  // Only show a few projects on homepage
+// 1. Destructure 'projects' from props and give it a default value of []
+export default function ProjectPreview({ projects = [], count = 3 }) {
+  
+  // 2. Now slice works safely because 'projects' is guaranteed to be an array
   const previewProjects = projects.slice(0, count);
 
   return (
-    <div className="max-w-5xl mx-auto mt-10 px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
-      {previewProjects.map((p) => {
-        const slug = createSlug(p.title);
-        return (
-          <Card key={slug} className="h-full flex flex-col">
+    <section className="max-w-5xl mx-auto w-full px-4 py-10">
+      <h2 className="text-3xl font-bold mb-6">Recent Projects</h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {previewProjects.map((p) => (
+          <Card key={p.id} className="h-full flex flex-col">
             <CardHeader>
-              <h2 className="text-xl font-semibold">{p.title}</h2>
+              <h3 className="text-xl font-semibold">{p.title}</h3>
             </CardHeader>
-
             <CardContent className="flex flex-col gap-4 flex-1">
-              <Image
-                src={p.image}
-                alt={p.title}
-                width={300}
-                height={200}
-                className="rounded"
-              />
-
-              <p className="text-gray-600 flex-1">{p.description}</p>
-
-              <Button asChild>
-                <Link href={`/projects/${slug}`}>View Project</Link>
-              </Button>
+               {/* Use a relative container for Image to prevent layout shift */}
+               <div className="relative w-full h-48">
+                  <Image 
+                    src={p.image || "https://placehold.co/600x400"} 
+                    alt={p.title} 
+                    fill 
+                    className="object-cover rounded" 
+                  />
+               </div>
+               <p className="line-clamp-3 text-gray-600">{p.description}</p>
             </CardContent>
           </Card>
-        );
-      })}
-    </div>
+        ))}
+      </div>
+
+      <div className="flex justify-center">
+        <Button asChild>
+          <Link href="/projects">View All Projects</Link>
+        </Button>
+      </div>
+    </section>
   );
 }

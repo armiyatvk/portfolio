@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useUser } from "@auth0/nextjs-auth0/client"; // 1. Import Auth0 hook
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -13,6 +14,7 @@ import {
 
 export default function NavBar() {
   const [open, setOpen] = useState(false);
+  const { user, isLoading } = useUser(); // 2. Get user session state
 
   return (
     <header className="w-full sticky top-0 z-50 bg-white border-b">
@@ -48,12 +50,22 @@ export default function NavBar() {
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
-              {/* NEW Contact Button */}
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
                   <Link href="/contact">Contact Me</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
+
+              {/* 3. Conditional Dashboard Link (Only if logged in) */}
+              {user && (
+                <NavigationMenuItem>
+                  <NavigationMenuLink asChild>
+                    <Link href="/dashboard" className="font-semibold text-blue-600">
+                      Dashboard
+                    </Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              )}
 
               <NavigationMenuItem>
                 <NavigationMenuTrigger>Resume</NavigationMenuTrigger>
@@ -67,11 +79,20 @@ export default function NavBar() {
                 </NavigationMenuContent>
               </NavigationMenuItem>
 
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link href="/login">Login</Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
+              {/* 4. Dynamic Login/Logout Button */}
+              {!isLoading && (
+                <NavigationMenuItem>
+                  <NavigationMenuLink asChild>
+                    {user ? (
+                      <a href="/api/auth/logout" className="text-red-500">
+                        Logout
+                      </a>
+                    ) : (
+                      <a href="/api/auth/login">Login</a>
+                    )}
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              )}
 
             </NavigationMenuList>
           </NavigationMenu>
@@ -83,9 +104,18 @@ export default function NavBar() {
         <nav className="md:hidden flex flex-col gap-3 p-4 bg-white border-t">
           <Link href="/" onClick={() => setOpen(false)}>Home</Link>
           <Link href="/projects" onClick={() => setOpen(false)}>Projects</Link>
-          
-          {/* NEW Contact Button */}
           <Link href="/contact" onClick={() => setOpen(false)}>Contact</Link>
+
+          {/* Mobile Dashboard Link */}
+          {user && (
+             <Link 
+               href="/dashboard" 
+               onClick={() => setOpen(false)}
+               className="font-semibold text-blue-600"
+             >
+               Dashboard
+             </Link>
+          )}
 
           <details className="cursor-pointer">
             <summary className="py-2">Resume</summary>
@@ -95,7 +125,14 @@ export default function NavBar() {
             </div>
           </details>
 
-          <Link href="/login" onClick={() => setOpen(false)}>Login</Link>
+          {/* Mobile Login/Logout */}
+          {!isLoading && (
+             user ? (
+               <a href="/api/auth/logout" className="text-red-500 py-2">Logout</a>
+             ) : (
+               <a href="/api/auth/login" className="py-2">Login</a>
+             )
+          )}
         </nav>
       )}
     </header>
