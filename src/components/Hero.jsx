@@ -1,29 +1,46 @@
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 
-export default function Hero() {
+export default function Hero({ data }) {
+  // If no data, return nothing
+  if (!data) return null;
+
   return (
     <div className="max-w-5xl mx-auto mt-10 px-4">
       <Card>
-        {/* Added pt-6 to CardContent to balance top spacing if needed, 
-            or rely on default Shadcn padding */}
         <CardContent className="flex flex-col md:flex-row items-center gap-6 p-6">
-          <Image
-            src="/profile.avif"
-            alt="Armiya - Full Stack Web Developer"
-            width={180}
-            height={180}
-            className="rounded-xl object-cover" // object-cover ensures it doesn't stretch
-            priority // <--- Important for LCP (Largest Contentful Paint)
-          />
+          
+          {/* FIX: Added a wrapper div with 'shrink-0' 
+            This forces the box to stay 180px wide and prevents squashing.
+          */}
+          <div className="relative shrink-0 w-[180px] h-[180px]">
+            {data.avatar ? (
+              <Image
+                src={data.avatar}
+                alt={data.fullName || "Profile Picture"}
+                fill // fills the 180x180 wrapper
+                className="rounded-xl object-cover"
+                priority
+                sizes="180px"
+              />
+            ) : (
+              // Fallback that looks exactly like the image shape
+              <div className="w-full h-full bg-gray-200 rounded-xl flex items-center justify-center text-gray-400 font-bold border-2 border-dashed border-gray-300">
+                No Img
+              </div>
+            )}
+          </div>
 
-          {/* Added text-center for mobile, md:text-left for desktop */}
+          {/* Text Content */}
           <div className="text-center md:text-left">
-            <h1 className="text-4xl font-bold">Armiya</h1>
+            <h1 className="text-4xl font-bold uppercase">
+              {data.fullName || "Your Name"}
+            </h1>
             <p className="text-gray-600 mt-2 leading-relaxed">
-              I’m Armiya, a full-stack web developer who loves turning ideas into real, working products. I build clean, modern web apps using React, Next.js, and JavaScript, and I’m passionate about creating experiences that feel smooth, intuitive, and purposeful. Whether it’s a multiplayer game, a mobile app, or a full portfolio website, I enjoy solving problems, learning fast, and pushing myself to build things that actually matter.
+              {data.longDescription || "No description provided yet."}
             </p>
           </div>
+
         </CardContent>
       </Card>
     </div>

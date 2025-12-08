@@ -119,3 +119,63 @@ export async function deleteProject(id) {
     throw error;
   }
 }
+
+export async function getHero() {
+  try {
+    // Attempt to fetch the singleton row (ID=1)
+    const [row] = await sql`SELECT * FROM hero WHERE id = 1`;
+    
+    if (!row) return null;
+
+    // Map DB snake_case to App camelCase
+    return {
+      fullName: row.full_name,
+      shortDescription: row.short_description,
+      longDescription: row.long_description,
+      avatar: row.avatar,
+    };
+  } catch (error) {
+    // If the table doesn't exist yet, just return null
+    return null;
+  }
+}
+
+export async function upsertHero(data) {
+  try {
+    // 1. Ensure the table exists (Lazy initialization)
+    await sql`
+      CREATE TABLE IF NOT EXISTS hero (
+        id INTEGER PRIMARY KEY DEFAULT 1,
+        full_name text,
+        short_description text,
+        long_description text,
+        avatar text
+      );
+    `;
+
+    // 2. Perform the Upsert (Insert or Update if ID=1 exists)
+    // We force ID=1 to ensure there is only ever ONE hero profile.
+    const [row] = await sql`
+      INSERT INTO hero (id, full_name, short_description, long_description, avatar)
+      VALUES (1, ${data.fullName}, ${data.shortDescription}, ${data.longDescription}, ${data.avatar})
+      ON CONFLICT (id) 
+      DO UPDATE SET 
+        full_name = EXCLUDED.full_name,
+        short_description = EXCLUDED.short_description,
+        long_description = EXCLUDED.long_description,
+        avatar = EXCLUDED.avatar
+      RETURNING *;
+    `;
+
+    // 3. Return mapped data
+    return {
+      fullName: row.full_name,
+      shortDescription: row.short_description,
+      longDescription: row.long_description,
+      avatar: row.avatar
+    };
+  } catch (error) {
+    console.error("Failed to upsert hero:", error);
+    throw error;
+  }
+}
