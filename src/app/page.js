@@ -3,6 +3,7 @@ import ProjectPreview from "@/components/ProjectPreview";
 import GitHubCalendar from "@/components/github-calendar";
 import { fetchProjects } from "@/lib/db"; // 1. Import the DB helper
 
+export const revalidate = 0; // Disable caching for this page
 // 2. Add 'async' here so we can wait for the database
 export default async function HomePage() {
   
