@@ -2,11 +2,11 @@
 import { neon } from "@neondatabase/serverless";
 
 // Ensure the env var exists to prevent runtime crashes later
-if (!process.env.NEON_DB_URL) {
-  throw new Error("Missing NEON_DB_URL environment variable");
+if (!process.env.DATABASE_URL) {
+  throw new Error("Missing DATABASE_URL environment variable");
 }
 
-const sql = neon(process.env.NEON_DB_URL);
+const sql = neon(process.env.DATABASE_URL);
 
 /**
  * Maps database rows to the application data model.
