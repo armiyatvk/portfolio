@@ -1,5 +1,6 @@
 import Hero from "@/components/Hero";
 import ProjectPreview from "@/components/ProjectPreview";
+import SkillsVisualizer from "@/components/SkillsVisualizer";
 import GitHubCalendar from "@/components/github-calendar";
 import { fetchProjects, getHero } from "@/lib/db"; // 1. Import getHero
 
@@ -30,6 +31,8 @@ export default async function HomePage() {
       <ProjectPreview projects={projects || []} count={3} />
       
       <GitHubCalendar username="armiyatvk" />
+
+      <SkillsVisualizer />
     </main>
   );
 }
